@@ -1,0 +1,79 @@
+---
+- name: Assign to BigPanda UUID and Check Status of Host
+  hosts: localhost
+  tasks:
+    - name: Assign to BigPanda UUID
+      bigpanda.incident.assign:
+        environment_id: "{{ environment_id }}"
+        api_token: "{{ api_token }}"
+        incident_id: "{{ incident_id }}"
+        assignee_id: "{{ assignee_id }}"
+
+    - name: Add Comment to Incident
+      bigpanda.incident.comment:
+        environment_id: "{{ environment_id }}"
+        incident_id: "{{ incident_id }}"
+        comment: "Assigning to Biggy an Automated User - Please do not take ownership of Incident until after Automation has attempted to diagnose or remediate"
+        api_token: "{{ api_token }}"
+
+    - name: Set Tags - Automation State Pending
+      bigpanda.incident.add_tag:
+        environment_id: "{{ environment_id }}"
+        tag_id: "automation_state"
+        tag_value: "Pending"
+        incident_id: "{{ incident_id }}"
+        api_token: "{{ api_token }}"
+
+    - name: Add Comment - Job Started
+      bigpanda.incident.comment:
+        environment_id: "{{ environment_id }}"
+        incident_id: "{{ incident_id }}"
+        comment: "Automation job started. {{ playbook_name }} ID{{ execution_id }} Purpose: DIAGNOSTIC If you need to see the execution please click here: {{ automation_job_url }}"
+        api_token: "{{ api_token }}"
+
+    - name: Set Tags - Automation Playbook, Job URL, and Purpose
+      bigpanda.incident.add_tag:
+        environment_id: "{{ environment_id }}"
+        tag_id: "automation_playbook_1"
+        tag_value: "{{ playbook_name }} ID{{ execution_id }}"
+        incident_id: "{{ incident_id }}"
+        api_token: "{{ api_token }}"
+
+    - name: Set Tags - Automation Job URL
+      bigpanda.incident.add_tag:
+        environment_id: "{{ environment_id }}"
+        tag_id: "automation_job_url_1"
+        tag_value: "{{ automation_job_url }}"
+        incident_id: "{{ incident_id }}"
+        api_token: "{{ api_token }}"
+
+    - name: Set Tags - Automation Purpose DIAGNOSTIC
+      bigpanda.incident.add_tag:
+        environment_id: "{{ environment_id }}"
+        tag_id: "automation_purpose"
+        tag_value: "DIAGNOSTIC"
+        incident_id: "{{ incident_id }}"
+        api_token: "{{ api_token }}"
+
+    - name: Mock - Check if the Pods are running
+      bigpanda.incident.comment:
+        environment_id: "{{ environment_id }}"
+        incident_id: "{{ incident_id }}"
+        comment: "Diagnsotic Results: The host is {{ host_1 }} NOT responding to ping."
+        api_token: "{{ api_token }}"
+
+    - name: Set Tags - Automation Unsuccessful
+      bigpanda.incident.add_tag:
+        environment_id: "{{ environment_id }}"
+        tag_id: "automation_state"
+        tag_value: "Unsuccessful"
+        incident_id: "{{ incident_id }}"
+        api_token: "{{ api_token }}"
+
+    - name: Set Tags - Automation Unsuccessful
+      bigpanda.incident.add_tag:
+        environment_id: "{{ environment_id }}"
+        tag_id: "store_down"
+        tag_value: "True"
+        incident_id: "{{ incident_id }}"
+        api_token: "{{ api_token }}"
