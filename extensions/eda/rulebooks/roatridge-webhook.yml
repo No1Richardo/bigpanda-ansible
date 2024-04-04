@@ -1,6 +1,6 @@
 # rulebook.yml
 ---
-- name: Mercadona Webhook Rulebook
+- name: ROatridge SHowcase Webhook Rulebook
   hosts: all
   sources:
     - ansible.eda.webhook:
