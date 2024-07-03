@@ -1,5 +1,5 @@
 ---
-- name: Assign to BigPanda UUID and Check Status of Host
+- name: Assign to BigPanda UUID and Clear Disk
   hosts: localhost
   tasks:
     - name: Assign to BigPanda UUID
@@ -13,7 +13,7 @@
       bigpanda.incident.comment:
         environment_id: "{{ environment_id }}"
         incident_id: "{{ incident_id }}"
-        comment: "Assigning to Biggy an Automated User - Please do not take ownership of Incident until after Automation has attempted to diagnose or remediate"
+        comment: "Assigning to Ansible Automated User - Please do not take ownership of Incident until after Automation has attempted to diagnose or remediate"
         api_token: "{{ api_token }}"
 
     - name: Set Tags - Automation State Pending
@@ -55,25 +55,18 @@
         incident_id: "{{ incident_id }}"
         api_token: "{{ api_token }}"
 
-    - name: Mock - Check if the Pods are running
+    - name: Mock - Clear Disk Space
       bigpanda.incident.comment:
         environment_id: "{{ environment_id }}"
         incident_id: "{{ incident_id }}"
-        comment: "Diagnsotic Results: The host is {{ host_1 }} NOT responding to ping."
+        comment: "Diagnsotic Results: The following has been cleared - /tmp, /var/log."
         api_token: "{{ api_token }}"
 
-    - name: Set Tags - Automation Unsuccessful
+    - name: Set Tags - Automation Successful
       bigpanda.incident.add_tag:
         environment_id: "{{ environment_id }}"
         tag_id: "automation_state"
-        tag_value: "Unsuccessful"
+        tag_value: "SUCCESSFUL"
         incident_id: "{{ incident_id }}"
         api_token: "{{ api_token }}"
 
-    - name: Set Tags - Automation Unsuccessful
-      bigpanda.incident.add_tag:
-        environment_id: "{{ environment_id }}"
-        tag_id: "store_down"
-        tag_value: "True"
-        incident_id: "{{ incident_id }}"
-        api_token: "{{ api_token }}"
