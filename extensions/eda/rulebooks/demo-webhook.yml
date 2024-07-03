@@ -1,22 +1,23 @@
 # rulebook.yml
 ---
-- name: ROatridge SHowcase Webhook Rulebook
+- name: General Showcase Webhook Rulebook
   hosts: all
   sources:
     - ansible.eda.webhook:
         host: 0.0.0.0
         port: 6001
   rules:
-    - name: Demo Part 1 - Execute Assign to BigPanda UUID and Ping Host Playbook
+    - name: Demo Part 1 - Execute Assign to BigPanda UUID and Check Disk Playbook
       condition: |
         event.payload.incident is defined and
         event.payload.incident.resolved == false and 
         event.payload.incident.active == true and
         event.payload.incident.alerts is not search("trace.internal.writer", ignorecase=true) and
-        event.payload.metadata.event_types is search("incident#updated", ignorecase=true)
+        event.payload.metadata.event_types is search("incident#updated", ignorecase=true) and
+        event.payload.metadata.alerts is search("Disk latency exceeded", ignorecase=true)
       action:
         run_job_template:
-          name: "Ping Host"
+          name: "Clear Disk"
           organization: Default
 
     - name: Log Event
