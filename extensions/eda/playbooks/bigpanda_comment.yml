@@ -9,19 +9,16 @@
     - name: Extract incident ID from webhook
       set_fact:
         incident_id: "{{ webhook_payload.id }}"
-
-    - name: Get comment from webhook header
-      set_fact:
-        incident_comment: "{{ lookup('env', 'BP_COMMENT') }}"
+        environment_id: "{{ webhook_payload.environment_id }}"
 
     - name: Post comment to BigPanda
       uri:
-        url: "https://api.bigpanda.io/resources/v2.0/environments/63bd568809cb331300ffa555/incidents/{{ incident_id }}/comments"
+        url: "https://eu-api.bigpanda.io/resources/v2.0/environments/{{ environment_id }}}}/incidents/{{ incident_id }}/comments"
         method: POST
         headers:
           Content-Type: "application/json"
           x-bp-token: "{{ lookup('env', 'BP_SECRET_TOKEN') }}"
-        body: "\"{{ incident_comment }}\""
+        body: "Automation Successful"
         body_format: json
         return_content: yes
       register: result
